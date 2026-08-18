@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="fi">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Ratapyramidi 2026</title>
+
+
+<style>
+
+/* =========================
+   PERUS
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    background:#eeeeee;
+
+    color:#333333;
+
+    margin:0;
+}
+
+
+/* =========================
+   PÄÄKORTTI
+========================= */
+
+.container {
+
+    max-width:600px;
+
+    margin:30px auto;
+
+    padding:25px;
+
+    background:white;
+
+    border-radius:18px;
+
+    box-shadow:
+        0 4px 15px rgba(0,0,0,0.12);
+
+    text-align:center;
+}
+
+
+/* =========================
+   OTSIKKO
+========================= */
+
+h1 {
+
+    color:#333333;
+
+    font-size:32px;
+
+    margin-bottom:5px;
+
+    border-top:8px solid #f58220;
+
+    padding-top:20px;
+}
+
+
+.subtitle {
+
+    margin-bottom:10px;
+}
+
+
+/* =========================
+   ALOITUS
+========================= */
+
+input {
+
+    padding:14px;
+
+    font-size:18px;
+
+    width:80%;
+
+    border-radius:10px;
+
+    border:2px solid #cccccc;
+
+    box-sizing:border-box;
+}
+
+
+/* =========================
+   NAPIT
+========================= */
+
+button {
+
+    margin-top:15px;
+
+    padding:14px 30px;
+
+    font-size:18px;
+
+    border:0;
+
+    border-radius:12px;
+
+    background:#f58220;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+    box-shadow:
+        0 3px 6px rgba(0,0,0,0.2);
+}
+
+
+button:hover {
+
+    background:#d96d10;
+}
+
+
+/* =========================
+   PIILOTUS
+========================= */
+
+.hidden {
+
+    display:none;
+}
+
+
+/* =========================
+   AIKA + VIRHEET
+========================= */
+
+.stats {
+
+    display:flex;
+
+    justify-content:space-between;
+
+    background:#333333;
+
+    color:white;
+
+    padding:12px 18px;
+
+    border-radius:12px;
+
+    margin:20px 0;
+}
+
+
+/* =========================
+   VIESTIT
+========================= */
+
+.message {
+
+    min-height:30px;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    margin:10px;
+}
+
+
+/* =========================
+   PYRAMIDI
+========================= */
+
+.pyramid {
+
+    width:100%;
+
+    margin:5px auto 10px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:7px;
+}
+
+
+.pyramid-row {
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:7px;
+
+    width:100%;
+}
+
+
+/* =========================
+   SANAKORTTI
+========================= */
+
+.card {
+
+    width:88px;
+
+    min-height:48px;
+
+    padding:8px 4px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    font-size:15px;
+
+    line-height:1.15;
+
+    border-radius:12px;
+
+    background:#ffffff;
+
+    box-shadow:
+        0 3px 8px rgba(0,0,0,0.15);
+
+    cursor:pointer;
+
+    transition:
+        transform .2s,
+        background .2s,
+        color .2s;
+
+    font-weight:bold;
+
+   overflow-wrap:break-word;
+word-break:normal;
+hyphens:auto;
+
+    user-select:none;
+}
+
+
+.card:hover {
+
+    transform:translateY(-2px);
+}
+
+
+.card.selected {
+
+    background:#f58220;
+
+    color:white;
+
+    transform:scale(1.05);
+}
+
+
+/*
+   Ratkaistut kortit
+*/
+
+.card.solved {
+
+    cursor:default;
+
+    transform:none;
+}
+
+
+.card.solved.size-5 {
+
+    background:#9fc5e8;
+}
+
+
+.card.solved.size-4 {
+
+    background:#b7d7a8;
+}
+
+
+.card.solved.size-3 {
+
+    background:#ffd966;
+}
+
+
+.card.solved.size-2 {
+
+    background:#ffb866;
+}
+
+
+.card.solved.size-1 {
+
+    background:#f58220;
+
+    color:white;
+}
+
+/* =========================
+   RYHMÄOTSIKOT
+========================= */
+
+.pyramid-row-wrapper {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    width:100%;
+}
+
+.row-title {
+    font-size:12px;
+    font-weight:bold;
+    color:#666;
+    min-height:0;
+    margin-top:2px;
+    margin-bottom:2px;
+}
+
+
+/* =========================
+   KORTIN SIIRTYMÄANIMAATIO
+========================= */
+
+.card.moving {
+    transition:
+        transform 0.45s cubic-bezier(.2,.8,.2,1);
+    z-index:20;
+}
+
+
+@media(max-width:500px) {
+
+    .row-title {
+        font-size:11px;
+        margin-top:1px;
+        margin-bottom:1px;
+    }
+
+}
+
+/* =========================
+   TARKISTA
+========================= */
+
+.check-button {
+
+    width:100%;
+
+    margin-top:12px;
+}
+
+
+/* =========================
+   LÖYDETYT RYHMÄT
+========================= */
+
+/*
+   Tässä versiossa ryhmän nimi
+   voidaan näyttää korttien
+   yhteydessä.
+*/
+
+.group-label {
+
+    font-size:12px;
+
+    font-weight:bold;
+
+    margin-bottom:2px;
+}
+
+
+/* =========================
+   VALINTAINFO
+========================= */
+
+.selection-info {
+
+    min-height:22px;
+
+    font-size:15px;
+
+    color:#666666;
+
+    margin:4px 0 6px;
+}
+
+
+/* =========================
+   LOPPUTULOS
+========================= */
+
+#result {
+
+    margin-top:20px;
+}
+
+
+#final {
+
+    font-size:18px;
+
+    line-height:1.5;
+}
+
+.row-title {
+
+    font-size:12px;
+
+    font-weight:bold;
+
+    color:#666;
+
+    margin-top:-3px;
+
+    margin-bottom:4px;
+
+}
+
+/* =========================
+   PUHELIN
+========================= */
+
+@media(max-width:500px) {
+
+    body {
+
+        padding:10px;
+    }
+
+
+    .container {
+
+        margin:10px auto;
+
+        padding:15px;
+
+        border-radius:12px;
+    }
+
+
+    h1 {
+
+        font-size:24px;
+
+        margin:10px 0;
+    }
+
+
+    .subtitle {
+
+        font-size:16px;
+
+        margin-bottom:5px;
+    }
+
+
+    input {
+
+        font-size:16px;
+
+        padding:10px;
+    }
+
+
+    button {
+
+        padding:12px 20px;
+
+        font-size:16px;
+    }
+
+
+    .stats {
+
+        margin-top:5px;
+
+        margin-bottom:8px;
+
+        padding:10px;
+    }
+
+
+    .pyramid {
+
+        gap:6px;
+
+        margin-top:3px;
+    }
+
+
+    .pyramid-row {
+
+        gap:6px;
+    }
+
+
+    /*
+       Sama peruskoko kuin
+       toimivassa versiossa.
+    */
+
+    .card {
+
+        width:82px;
+
+        min-height:44px;
+
+        padding:7px 3px;
+
+        font-size:14px;
+    }
+
+
+    .message {
+
+        margin:7px;
+    }
+
+}
+
+
+@media(max-width:380px) {
+
+    .card {
+
+        width:72px;
+
+        min-height:42px;
+
+        font-size:13px;
+    }
+
+
+    .pyramid-row {
+
+        gap:4px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<h1 id="puzzleName"></h1>
+
+
+<p class="subtitle">
+    Ratamittauksen sanapeli
+</p>
+
+
+<!-- =========================
+     ALOITUS
+========================= -->
+
+<div id="start">
+
+    <p>
+        Löydä toisiinsa kuuluvat sanat.
+    </p>
+
+    <p>
+        Ryhmät sisältävät 5, 4, 3 ja 2 sanaa.
+        Lisäksi yksi sana ei kuulu mihinkään ryhmään.
+    </p>
+
+    <input
+        id="name"
+        placeholder="Nimesi"
+        autocomplete="off"
+    >
+
+    <br>
+
+    <button onclick="start()">
+        Aloita
+    </button>
+
+</div>
+
+
+<!-- =========================
+     PELI
+========================= -->
+
+<div
+    id="game"
+    class="hidden"
+>
+
+
+    <div class="stats">
+
+        <div>
+            ⏱
+            <span id="time">
+                00:00
+            </span>
+        </div>
+
+        <div>
+            ❌
+            <span id="errors">
+                0
+            </span>
+        </div>
+
+    </div>
+
+
+    <div
+        id="message"
+        class="message"
+    >
+    </div>
+
+
+    <div
+        id="selectionInfo"
+        class="selection-info"
+    >
+    </div>
+
+
+    <div
+        id="words"
+        class="pyramid"
+    >
+    </div>
+
+
+    <button
+        class="check-button"
+        onclick="check()"
+    >
+        Tarkista
+    </button>
+
+
+</div>
+
+
+<!-- =========================
+     TULOS
+========================= -->
+
+<div
+    id="result"
+    class="hidden"
+>
+
+    <h2>
+        🎉 Valmis!
+    </h2>
+
+    <p id="final"></p>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+
+/* =========================
+   PELIN DATA
+========================= */
+
+const puzzle = {
+
+    name:"Ratapyramidi 2026",
+
+
+    groups:[
+
+        {
+            title:"Vaihteen osia",
+
+            words:[
+                "kääntölaite",
+                "kääntöavustin",
+                "kieli",
+                "tankokuoppa",
+                "lumisuoja"
+            ]
+        },
+
+
+        {
+            title:"Mittaukseen tarvitaan",
+
+            words:[
+                "taky",
+                "prisma",
+                "sauva",
+                "liitu"
+            ]
+        },
+
+
+        {
+            title:"Muuntajat",
+
+            words:[
+                "teho",
+                "imu",
+                "erotus"
+            ]
+        },
+
+
+        {
+            title:"Laitteistot",
+
+            words:[
+                "Leica",
+                "Trimble"
+            ]
+        }
+
+    ],
+
+
+    extra:{
+
+        title:"Ylimääräinen sana",
+
+        words:[
+            "radio"
+        ]
+
+    }
+
+};
+
+
+/* =========================
+   MUUTTUJAT
+========================= */
+
+let playerName="";
+
+let activeWords=[];
+
+let selected=[];
+
+let solvedGroups=[];
+
+let solvedWords=[];
+
+let errors=0;
+
+let seconds=0;
+
+let timer;
+
+let tried=[];
+
+
+/* =========================
+   PYRAMIDIN PAIKAT
+========================= */
+
+/*
+       0
+
+      1 2
+
+     3 4 5
+
+    6 7 8 9
+
+  10 11 12 13 14
+*/
+
+
+const pyramidRows=[
+
+    [0],
+
+    [1,2],
+
+    [3,4,5],
+
+    [6,7,8,9],
+
+    [10,11,12,13,14]
+
+];
+
+
+/* =========================
+   ALOITUS
+========================= */
+
+window.onload=function(){
+
+    document.getElementById(
+        "puzzleName"
+    ).innerHTML=puzzle.name;
+
+};
+
+
+function start(){
+
+    playerName=
+        document
+        .getElementById("name")
+        .value
+        .trim();
+
+
+    if(playerName===""){
+
+        playerName="Pelaaja";
+
+    }
+
+
+    document
+        .getElementById("start")
+        .classList
+        .add("hidden");
+
+
+    document
+        .getElementById("game")
+        .classList
+        .remove("hidden");
+
+
+    activeWords=[];
+
+
+    puzzle.groups.forEach(
+        group=>{
+
+            activeWords.push(
+                ...group.words
+            );
+
+        }
+    );
+
+
+    activeWords.push(
+        ...puzzle.extra.words
+    );
+
+
+    shuffle(activeWords);
+
+
+    drawWords();
+
+
+    timer=setInterval(()=>{
+
+        seconds++;
+
+
+        let m=
+            Math.floor(seconds/60)
+            .toString()
+            .padStart(2,"0");
+
+
+        let s=
+            (seconds%60)
+            .toString()
+            .padStart(2,"0");
+
+
+        document.getElementById(
+            "time"
+        ).innerHTML=
+            m+":"+s;
+
+
+    },1000);
+
+}
+
+
+/* =========================
+   SATUNNAISTUS
+========================= */
+
+function shuffle(array){
+
+    for(
+        let i=array.length-1;
+        i>0;
+        i--
+    ){
+
+        const j=
+            Math.floor(
+                Math.random()*(i+1)
+            );
+
+
+        [
+            array[i],
+            array[j]
+        ]=[
+            array[j],
+            array[i]
+        ];
+
+    }
+
+}
+
+
+/* =========================
+   OIKEAN RYHMÄN HAKU
+========================= */
+
+function getGroupForWord(word){
+
+    for(
+        let group of puzzle.groups
+    ){
+
+        if(
+            group.words.includes(word)
+        ){
+
+            return group;
+
+        }
+
+    }
+
+
+    if(
+        puzzle.extra.words.includes(word)
+    ){
+
+        return puzzle.extra;
+
+    }
+
+
+    return null;
+
+}
+
+
+/* =========================
+   PIIRRETÄÄN PYRAMIDI
+========================= */
+
+function drawWords(){
+
+    const box=
+        document.getElementById(
+            "words"
+        );
+
+
+    box.innerHTML="";
+
+
+    /*
+       Luodaan 15 paikkaa.
+    */
+
+    let positions=
+        new Array(15)
+        .fill(null);
+
+
+    /*
+       Ensin sijoitetaan ratkaistut
+       ryhmät omille riveilleen.
+    */
+
+    solvedGroups.forEach(
+        group=>{
+
+            const row=
+                pyramidRows.find(
+                    r =>
+                        r.length===
+                        group.words.length
+                );
+
+
+            if(!row){
+
+                return;
+
+            }
+
+
+            group.words.forEach(
+                (word,index)=>{
+
+                    positions[
+                        row[index]
+                    ]=word;
+
+                }
+            );
+
+        }
+    );
+
+
+    /*
+       Sitten täytetään vapaat
+       paikat ratkaisemattomilla
+       sanoilla.
+    */
+
+    let freePositions=[];
+
+
+    positions.forEach(
+        (value,index)=>{
+
+            if(value===null){
+
+                freePositions.push(
+                    index
+                );
+
+            }
+
+        }
+    );
+
+
+    let unsolved=
+        activeWords.filter(
+            word =>
+                !solvedWords.includes(word)
+        );
+
+
+    unsolved.forEach(
+        (word,index)=>{
+
+            positions[
+                freePositions[index]
+            ]=word;
+
+        }
+    );
+
+
+    /*
+       Piirretään rivit.
+    */
+
+    pyramidRows.forEach(
+        rowPositions=>{
+
+            const row=
+                document.createElement(
+                    "div"
+                );
+
+
+            row.className=
+                "pyramid-row";
+
+const solvedGroup =
+    solvedGroups.find(
+        group =>
+            group.words.length ===
+            rowPositions.length
+    );
+
+if(solvedGroup){
+
+    const title =
+        document.createElement("div");
+
+    title.className =
+        "row-title";
+
+    title.innerHTML =
+        solvedGroup.title;
+
+    box.appendChild(title);
+
+}
+
+
+            rowPositions.forEach(
+                position=>{
+
+                    const word=
+                        positions[position];
+
+
+                    const card=
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    card.className="card";
+
+
+                    if(word){
+
+                        card.innerHTML=word;
+
+
+                        /*
+                           Onko sana jo ratkaistu?
+                        */
+
+                        const group=
+                            getGroupForWord(
+                                word
+                            );
+
+
+                        const isSolved=
+                            solvedWords
+                            .includes(word);
+
+
+                        if(isSolved){
+
+                            card.classList.add(
+                                "solved"
+                            );
+
+
+                            card.classList.add(
+                                "size-"+group.words.length
+                            );
+
+
+                        } else {
+
+                            /*
+                               Normaali valinta.
+                            */
+
+                            if(
+                                selected.includes(
+                                    word
+                                )
+                            ){
+
+                                card.classList.add(
+                                    "selected"
+                                );
+
+                            }
+
+
+                            card.onclick=()=>{
+
+                                if(
+                                    selected.includes(
+                                        word
+                                    )
+                                ){
+
+                                    selected=
+                                        selected.filter(
+                                            x =>
+                                                x!==word
+                                        );
+
+                                } else {
+
+                                    selected.push(
+                                        word
+                                    );
+
+                                }
+
+
+                                drawWords();
+
+                            };
+
+                        }
+
+                    }
+
+
+                    row.appendChild(card);
+
+                }
+            );
+
+
+            box.appendChild(row);
+
+        }
+    );
+
+
+    updateSelectionInfo();
+
+}
+
+
+/* =========================
+   VALINTAINFO
+========================= */
+
+function updateSelectionInfo(){
+
+    const box=
+        document.getElementById(
+            "selectionInfo"
+        );
+
+
+    if(selected.length===0){
+
+        box.innerHTML="";
+
+        return;
+
+    }
+
+
+    box.innerHTML=
+        selected.length+
+        " sana"+
+        (
+            selected.length===1
+            ? ""
+            : "a"
+        )+
+        " valittu";
+
+}
+
+
+/* =========================
+   TARKISTA
+========================= */
+
+function check(){
+
+    if(selected.length===0){
+
+        showMessage(
+            "Valitse ensin sana tai sanoja."
+        );
+
+        return;
+
+    }
+
+
+    const combination=
+        [...selected]
+        .sort()
+        .join("|");
+
+
+    /*
+       Sama yhdistelmä uudelleen
+       ei aiheuta uutta virhettä.
+    */
+
+    if(
+        tried.includes(combination)
+    ){
+
+        showMessage(
+            "💡 Kokeilit tätä jo"
+        );
+
+
+        selected=[];
+
+
+        drawWords();
+
+
+        return;
+
+    }
+
+
+    let correctGroup=null;
+
+
+    const allGroups=[
+
+        ...puzzle.groups,
+
+        puzzle.extra
+
+    ];
+
+
+    allGroups.forEach(
+        group=>{
+
+            if(
+
+                selected.length===
+                group.words.length
+
+                &&
+
+                selected.every(
+                    word =>
+                        group.words
+                        .includes(word)
+                )
+
+            ){
+
+                correctGroup=group;
+
+            }
+
+        }
+    );
+
+
+    if(correctGroup){
+
+        /*
+           Ryhmä löytyi.
+        */
+
+        solvedGroups.push(
+            correctGroup
+        );
+
+
+        correctGroup.words.forEach(
+            word=>{
+
+                solvedWords.push(
+                    word
+                );
+
+
+                activeWords=
+                    activeWords.filter(
+                        x =>
+                            x!==word
+                    );
+
+            }
+        );
+
+
+        showMessage(
+            "✅ Oikein!"
+        );
+
+
+    } else {
+
+        tried.push(
+            combination
+        );
+
+
+        errors++;
+
+
+        document.getElementById(
+            "errors"
+        ).innerHTML=
+            errors;
+
+
+        showMessage(
+            "❌ Ei tällä kertaa"
+        );
+
+    }
+
+
+    selected=[];
+
+
+    drawWords();
+
+
+    if(
+        activeWords.length===0
+    ){
+
+        finish();
+
+    }
+
+}
+
+
+/* =========================
+   VIESTIT
+========================= */
+
+function showMessage(text){
+
+    const box=
+        document.getElementById(
+            "message"
+        );
+
+
+    box.innerHTML=text;
+
+
+    setTimeout(
+        ()=>{
+
+            box.innerHTML="";
+
+        },
+        1500
+    );
+
+}
+
+
+/* =========================
+   LOPPUTULOS
+========================= */
+
+function finish(){
+
+    clearInterval(timer);
+
+
+    document
+        .getElementById("result")
+        .classList
+        .remove("hidden");
+
+
+    let message;
+
+
+    if(errors===0){
+
+        message=
+            "🏆 Täydellinen suoritus!";
+
+    } else {
+
+        message=
+            "🎉 Ratapyramidi ratkaistu!";
+
+    }
+
+
+    document.getElementById(
+        "final"
+    ).innerHTML=
+
+        message+
+
+        "<br><br>"+
+
+        "Pelaaja: "+
+        playerName+
+
+        "<br><br>"+
+
+        "Aika: "+
+        document.getElementById(
+            "time"
+        ).innerHTML+
+
+        "<br>"+
+
+        "Virheitä: "+
+        errors;
+
+
+    document
+        .getElementById("game")
+        .scrollIntoView({
+            behavior:"smooth"
+        });
+
+}
+
+</script>
+
+
+</body>
+
+</html>
