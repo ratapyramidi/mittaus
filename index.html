@@ -1474,10 +1474,49 @@ function showMessage(text){
 /* =========================
    LOPPUTULOS
 ========================= */
+function sendResult(){
+
+    const url = "https://script.google.com/macros/s/AKfycbzxfp7OK5xnNNBTTidj8_SlEFSV8Qbx-YiJyP0g6fU-uj1NlMj-0I3J0avle811EVdDZg/exec";
+
+    const data = {
+        name: playerName,
+        time: document.getElementById("time").innerHTML,
+        seconds: seconds,
+        errors: errors
+    };
+
+    fetch(url, {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+        },
+
+        body: JSON.stringify(data)
+
+    })
+    .then(response => response.text())
+    .then(result => {
+
+        console.log("Tulos lähetetty:", result);
+
+    })
+    .catch(error => {
+
+        console.log(
+            "Tuloksen lähetys epäonnistui:",
+            error
+        );
+
+    });
+
+}
 
 function finish(){
 
     clearInterval(timer);
+  sendResult();
 
 
     document
