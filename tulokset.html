@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="fi">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Ratapyramidi – Tulokset</title>
+
+
+<style>
+
+body {
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    background:#eeeeee;
+
+    color:#333;
+
+    margin:0;
+
+    padding:15px;
+
+}
+
+
+.container {
+
+    max-width:600px;
+
+    margin:20px auto;
+
+    padding:20px;
+
+    background:white;
+
+    border-radius:18px;
+
+    box-shadow:
+        0 4px 15px
+        rgba(0,0,0,0.12);
+
+}
+
+
+h1 {
+
+    text-align:center;
+
+    border-top:
+        8px solid #f58220;
+
+    padding-top:15px;
+
+    margin-top:0;
+
+}
+
+
+.subtitle {
+
+    text-align:center;
+
+    color:#666;
+
+}
+
+
+.result {
+
+    display:grid;
+
+    grid-template-columns:
+        45px 1fr 80px 60px;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:12px;
+
+    margin:8px 0;
+
+    border-radius:12px;
+
+    background:#f7f7f7;
+
+}
+
+
+.result.first {
+
+    background:#ffd966;
+
+    font-weight:bold;
+
+}
+
+
+.result.second {
+
+    background:#d9e1f2;
+
+    font-weight:bold;
+
+}
+
+
+.result.third {
+
+    background:#f4cccc;
+
+    font-weight:bold;
+
+}
+
+
+.position {
+
+    font-size:22px;
+
+    text-align:center;
+
+}
+
+
+.time {
+
+    font-weight:bold;
+
+}
+
+
+.errors {
+
+    text-align:center;
+
+}
+
+
+.updated {
+
+    text-align:center;
+
+    color:#777;
+
+    font-size:13px;
+
+    margin-top:20px;
+
+}
+
+
+.loading {
+
+    text-align:center;
+
+    padding:30px;
+
+}
+
+
+@media(max-width:500px){
+
+    .container {
+
+        margin:5px auto;
+
+        padding:15px;
+
+    }
+
+
+    .result {
+
+        grid-template-columns:
+            40px 1fr 65px 45px;
+
+        padding:10px 6px;
+
+        font-size:14px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<h1>🏆 Ratapyramidi 2026</h1>
+
+
+<div class="subtitle">
+
+Tulostaulu
+
+</div>
+
+
+<div id="results">
+
+<div class="loading">
+
+Ladataan tuloksia...
+
+</div>
+
+</div>
+
+
+<div id="updated"
+     class="updated">
+</div>
+
+
+</div>
+
+
+
+<script>
+
+
+const API_URL =
+    "https://script.google.com/macros/s/AKfycbzxfp7OK5xnNNBTTidj8_SlEFSV8Qbx-YiJyP0g6fU-uj1NlMj-0I3J0avle811EVdDZg/exec";
+
+
+
+function loadResults(){
+
+
+    fetch(API_URL)
+
+
+    .then(response =>
+        response.json()
+    )
+
+
+    .then(results => {
+
+
+        const box =
+            document.getElementById(
+                "results"
+            );
+
+
+        box.innerHTML="";
+
+
+        results.forEach(
+            (result,index) => {
+
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.className =
+                "result";
+
+
+            if(index === 0){
+
+                row.classList.add(
+                    "first"
+                );
+
+            }
+
+
+            if(index === 1){
+
+                row.classList.add(
+                    "second"
+                );
+
+            }
+
+
+            if(index === 2){
+
+                row.classList.add(
+                    "third"
+                );
+
+            }
+
+
+            let medal = "";
+
+
+            if(index === 0){
+
+                medal = "🥇";
+
+            }
+            else if(index === 1){
+
+                medal = "🥈";
+
+            }
+            else if(index === 2){
+
+                medal = "🥉";
+
+            }
+            else {
+
+                medal =
+                    (index + 1) + ".";
+
+            }
+
+
+            row.innerHTML = `
+
+                <div class="position">
+                    ${medal}
+                </div>
+
+                <div>
+                    ${result.name}
+                </div>
+
+                <div class="time">
+                    ${result.time}
+                </div>
+
+                <div class="errors">
+                    ❌ ${result.errors}
+                </div>
+
+            `;
+
+
+            box.appendChild(row);
+
+
+        });
+
+
+        document.getElementById(
+            "updated"
+        ).innerHTML =
+            "Päivitetty " +
+            new Date()
+                .toLocaleTimeString(
+                    "fi-FI"
+                );
+
+
+    })
+
+
+    .catch(error => {
+
+
+        document.getElementById(
+            "results"
+        ).innerHTML =
+
+            "❌ Tuloksia ei voitu ladata.";
+
+
+        console.error(error);
+
+
+    });
+
+}
+
+
+/* Ladataan heti */
+
+loadResults();
+
+
+/*
+   Päivitetään tulostaulu
+   automaattisesti minuutin välein.
+*/
+
+setInterval(
+    loadResults,
+    60000
+);
+
+
+</script>
+
+
+</body>
+
+</html>
